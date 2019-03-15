@@ -18,6 +18,15 @@ export class AppComponent {
   locationTrackingEnabled = false;
 
   constructor(private locationService: LocationService) {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        if (position) {
+          console.log('Geolocation data success');
+        }
+      });
+    } else {
+      alert('Geolocation is not supported by this browser.');
+    }
     this.showTime();
     this.getTeams();
   }
@@ -27,6 +36,8 @@ export class AppComponent {
   }
 
   startTracker(): void {
+    this.getAndSendLocation();
+    this.date = new Date();
     this.locationTrackingEnabled = true;
   }
 
