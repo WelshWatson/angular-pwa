@@ -13,7 +13,7 @@ export class AppComponent {
   long: string;
   lat: string;
   date: Date;
-  teams: Team[];
+  teams: Team[] = [];
   selectedTeam: number = null;
   locationTrackingEnabled = false;
 
