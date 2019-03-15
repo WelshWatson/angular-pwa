@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { TrackingData } from '../models/tracking-data';
 
 // const url = 'http://localhost:1157/';
-const url = 'http://amr2019.azurewebsites.net/';
+const url = 'https://amr2019.azurewebsites.net/';
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
