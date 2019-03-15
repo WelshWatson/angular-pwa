@@ -1,5 +1,7 @@
-import { Component, HostListener } from '@angular/core';
-import { PwaService } from './services/pwa-service';
+import { LocationService } from './services/location-service';
+import { Component } from '@angular/core';
+import { Team } from './models/team';
+import { TrackingData } from './models/tracking-data';
 
 @Component({
   selector: 'app-root',
@@ -8,29 +10,68 @@ import { PwaService } from './services/pwa-service';
 })
 export class AppComponent {
   title = 'angular-pwa';
-  long: number;
-  lat: number;
+  long: string;
+  lat: string;
   date: Date;
+  teams: Team[];
+  selectedTeam: number = null;
+  locationTrackingEnabled = false;
 
-  constructor(private Pwa: PwaService) {
+  constructor(private locationService: LocationService) {
     this.showTime();
+    this.getTeams();
+  }
+
+  selectTeam(value: any): void {
+    this.selectedTeam = value;
+  }
+
+  startTracker(): void {
+    this.locationTrackingEnabled = true;
+  }
+
+  stopTracker(): void {
+    this.locationTrackingEnabled = false;
+  }
+
+  private getTeams(): void {
+    this.locationService.getTeams().subscribe((x) => {
+      if (x) {
+        this.teams = x;
+      }
+    });
   }
 
   private showTime() {
     setTimeout(() => {
-      this.date = new Date();
-      this.getLocation();
+      if (this.locationTrackingEnabled) {
+        this.getAndSendLocation();
+        this.date = new Date();
+      }
       this.showTime();
-      console.log('Time updated');
     }, 1000);
   }
 
-  private getLocation() {
+  private sendTrackingData(teamId: number, longitude: string, latitude: string): void {
+    const data = new TrackingData();
+    data.teamId = teamId;
+    data.longitude = longitude;
+    data.latitude = latitude;
+
+    this.locationService.postTrackingData(data).subscribe((result) => {
+      if (result) {
+        console.log('Tracking data saved.');
+      }
+    });
+  }
+
+  private getAndSendLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         if (position) {
-          this.long = position.coords.longitude;
-          this.lat = position.coords.latitude;
+          this.lat = position.coords.latitude.toString();
+          this.long = position.coords.longitude.toString();
+          this.sendTrackingData(this.selectedTeam, this.long, this.lat);
         }
       });
     } else {

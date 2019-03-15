@@ -7,6 +7,9 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { SwUpdate } from '@angular/service-worker';
 import {PwaService} from './services/pwa-service';
+import { LocationService } from './services/location-service';
+import { HttpClientModule } from '@angular/common/http';
+
 
 @NgModule({
   declarations: [
@@ -15,9 +18,10 @@ import {PwaService} from './services/pwa-service';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
-  providers: [SwUpdate, PwaService],
+  providers: [SwUpdate, PwaService, LocationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
