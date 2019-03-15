@@ -49,7 +49,7 @@ export class AppComponent {
         this.date = new Date();
       }
       this.showTime();
-    }, 1000);
+    }, 30000);
   }
 
   private sendTrackingData(teamId: number, longitude: string, latitude: string): void {
